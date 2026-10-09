@@ -1,50 +1,64 @@
-# app-concat
+# Concatenate Raw MEG/EEG Files
 
-[![Abcdspec-compliant](https://img.shields.io/badge/ABCD_Spec-v1.1-green.svg)](https://github.com/brain-life/abcd-spec)
-[![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.444-blue.svg)](https://doi.org/10.25663/bl.app.444)
+[![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.756-blue.svg)](https://doi.org/10.25663/brainlife.app.756)
 
 ## Description
 
-Concatenates multiple MNE raw data files (.fif format) into a single unified raw data file using `mne.concatenate_raws()`. This app is useful for combining data from multiple recording sessions, runs, or files into a single dataset for unified downstream processing.
+Concatenates multiple MNE raw data files (`.fif` format) into a single unified raw data file using `mne.concatenate_raws()`. This app is useful for combining data from multiple recording sessions, runs, or files into a single dataset for unified downstream processing. Before concatenation, channel order and the order of channels marked as bad are normalized across the input files so that `mne.concatenate_raws()` does not reject files that differ only in ordering.
+
+The app generates:
+- A single concatenated raw `.fif` file
+- An HTML report with a summary of the input files and the concatenated data
+- A `product.json` summary of the concatenated data
 
 ## Inputs
 
-- **raw**: List of paths to MNE raw data files (.fif format) to concatenate. Files should be in the same format and ideally have compatible channel configurations.
+- **`raw`** (`neuro/meeg/mne/raw`, multiple): list of continuous MNE raw data files to concatenate. Files must share the same set of channels and the same set of bad channels (order may differ and is normalized automatically).
 
 ## Outputs
 
-- **out_dir/raw.fif**: Concatenated raw data file in MNE format
-- **out_report/report.html**: QC report containing concatenation details, source file information, and channel details
-- **product.json**: Metadata with information about the concatenated data
+- **`out_dir/raw.fif`**: concatenated raw data file in MNE format
+- **`out_report/report.html`**: QC report containing a summary of the input files and channel details of the concatenated data
+- **`product.json`**: metadata summary of the concatenated data
 
 ## Configuration Parameters
 
-### Required
+This app reads no configuration parameters beyond its input file list (see Inputs above).
 
-- `raw`: A list/array of paths to the input MNE raw data files (.fif format) to be concatenated
+## Usage
 
-Example configuration:
+### Running on Brainlife.io
+
+1. Go to the [Brainlife.io](https://brainlife.io) platform and start a new process.
+2. Select this app ("Concatenate Raw MEG/EEG Files") and choose two or more `neuro/meeg/mne/raw` datasets as the `raw` input.
+3. Submit the process; the concatenated raw file and QC report will appear in your project outputs.
+
+### Local Testing
+
+```bash
+git clone <this-repo>
+cd concat
+./main
+```
+
+`config.json` must contain a `raw` key with a list of paths to the input `.fif` files, e.g.:
+
 ```json
 {
     "raw": [
-        "path/to/raw1.fif",
-        "path/to/raw2.fif",
-        "path/to/raw3.fif"
+        "in_dir/raw1.fif",
+        "in_dir/raw2.fif"
     ]
 }
 ```
 
-## Usage
-
-The app reads multiple raw MNE data files, loads them with preload enabled, concatenates them into a single raw file, and outputs the result.
-
 ## Technical Details
 
-- **Execution**: Python with MNE-Python and shared brainlife_utils library
+- **Execution**: Python with MNE-Python and the shared `brainlife_utils` library
 - **Data format**: MNE `.fif` format (compatible with all downstream Brainlife.io apps)
-- **Concatenation**: Uses `mne.concatenate_raws()` for proper handling of channel information and metadata
-- **Preloading**: All files are preloaded into memory before concatenation
-- **Report generation**: Automatic HTML report with concatenation details and channel visualization
+- **Concatenation**: uses `mne.concatenate_raws()` after normalizing channel order and bad-channel order across inputs
+- **Preloading**: all files are preloaded into memory before concatenation
+- **Report generation**: automatic HTML report with per-file summary table and channel information
 
 ## Authors
 
@@ -55,9 +69,8 @@ The app reads multiple raw MNE data files, loads them with preload enabled, conc
 
 We kindly ask that you cite the following articles when publishing papers and code using this app:
 
-**brainlife.io: A decentralized and open source cloud platform to support neuroscience research**. Hayashi, S., Caron, B. A., et al. & Pestilli, F. (2023). ArXiv. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10274934/
-
-**MEG and EEG data analysis with MNE-Python**. Gramfort A, et al. & Hämäläinen MS. (2013). Frontiers in Neuroscience, 7(267):1–13. https://doi.org/10.3389/fnins.2013.00267
+- Hayashi, S., Caron, B.A., Heinsfeld, A.S. et al. brainlife.io: a decentralized and open-source cloud platform to support neuroscience research. Nat Methods 21, 809–813 (2024). https://doi.org/10.1038/s41592-024-02237-2
+- Gramfort, A. et al. MEG and EEG data analysis with MNE-Python. Front. Neurosci. 7, 267 (2013). https://doi.org/10.3389/fnins.2013.00267
 
 ## Funding Acknowledgement
 
@@ -67,36 +80,9 @@ brainlife.io is publicly funded and for the sustainability of the project we kin
 [![NSF-BCS-1636893](https://img.shields.io/badge/NSF_BCS-1636893-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1636893)
 [![NSF-ACI-1916518](https://img.shields.io/badge/NSF_ACI-1916518-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1916518)
 [![NSF-IIS-1912270](https://img.shields.io/badge/NSF_IIS-1912270-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1912270)
+[![NIH-NIBIB-R01EB029272](https://img.shields.io/badge/NIH_NIBIB-R01EB029272-green.svg)](https://grantome.com/grant/NIH/R01-EB029272-01)
 [![NIH-NIBIB-R01EB030896](https://img.shields.io/badge/NIH_NIBIB-R01EB030896-green.svg)](https://grantome.com/grant/NIH/R01-EB030896-01)
 
-Copyright (c) 2026 MEEG Brainlife team
+## License
 
-This project is licensed under the AGPL-3.0 License - see [license.txt](license.txt) for details.
-```
-
-### Sample Datasets
-
-If you don't have your own input file, you can download sample datasets from Brainlife.io, or you can use [Brainlife CLI](https://github.com/brain-life/cli).
-
-```
-npm install -g brainlife
-bl login
-mkdir input
-bl dataset download 5a0f0fad2c214c9ba8624376#5a050966eec2b300611abff2 && mv 5a0f0fad2c214c9ba8624376#5a050966eec2b300611abff2 .
-```
-
-## Output
-
-All output file (a concatenated MNE/FIFF (.fif) file) will be generated inside the current working directory (pwd), inside a specifc directory called:
-
-```
-out_dir
-```
-
-### Dependencies
-
-This App requires MNE/Python to run.
-
-## Citation
-
-Hayashi, S., Caron, B.A., Heinsfeld, A.S. et al. brainlife.io: a decentralized and open-source cloud platform to support neuroscience research. Nat Methods 21, 809–813 (2024). https://doi.org/10.1038/s41592-024-02237-2
+Copyright (c) 2026 MEEG Brainlife team. Licensed under AGPL-3.0, see [license.txt](license.txt).
