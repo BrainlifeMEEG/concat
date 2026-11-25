@@ -1,5 +1,34 @@
 # Concatenate Raw MEG/EEG Files
 
+<!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
+
+> **Concatenate multiple MNE.Raw instances into single .Raw**
+
+Joins several MNE raw files end to end with mne.concatenate_raws(), for example multiple runs or sessions, and writes one raw.fif with a QC report. Inputs must share the same channels and bad channels (order is normalised automatically). It reads no configuration parameters.
+
+| | |
+|---|---|
+| 📥 **Inputs** | `neuro/meeg/mne/raw` |
+| 📤 **Outputs** | `neuro/meeg/mne/raw` · `report/html` |
+| 🐳 **Container** | `brainlifemeeg/mne:1.12.1` |
+| ⚙️ **Resources** | 32 GB memory · 0.42 h walltime |
+| 🔗 **Run it** | [doi.org/10.25663/brainlife.app.756](https://doi.org/10.25663/brainlife.app.756) |
+
+#### 📥 Inputs
+
+| Input | Datatype | Required | Description |
+|---|---|---|---|
+| `raw` | `neuro/meeg/mne/raw` | yes | Continuous MNE raw files to concatenate. All files must share the same set of channels and the same bad channels. |
+
+#### 📤 Outputs
+
+| Output | Datatype | Description |
+|---|---|---|
+| `out_dir` | `neuro/meeg/mne/raw` | Concatenated raw data (raw.fif). |
+| `out_report` | `report/html` | HTML report of concatenate process |
+
+<!-- brainlife-app:end -->
+
 [![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.756-blue.svg)](https://doi.org/10.25663/brainlife.app.756)
 
 ## Description
